@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Create .env file
-        working-directory: docker/app2-tax-calculator/tax-calculator-frontend
+        working-directory: node/tax-calculator-frontend
         run: |
           echo "VITE_API_URL=/api" > .env
 
@@ -22,15 +22,15 @@ jobs:
           node-version: '25'
 
       - name: Install dependencies
-        working-directory: docker/app2-tax-calculator/tax-calculator-frontend
+        working-directory: node/tax-calculator-frontend
         run: npm ci
 
       - name: Run tests
-        working-directory: docker/app2-tax-calculator/tax-calculator-frontend
+        working-directory: node/tax-calculator-frontend
         run: npm test --if-present
 
       - name: Build frontend
-        working-directory: docker/app2-tax-calculator/tax-calculator-frontend
+        working-directory: node/tax-calculator-frontend
         run: npm run build
 
   docker-build-push:
@@ -48,14 +48,14 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Create .env file
-        working-directory: docker/app2-tax-calculator/tax-calculator-frontend
+        working-directory: node/tax-calculator-frontend
         run: |
           echo "VITE_API_URL=/api" > .env
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: docker/app2-tax-calculator/tax-calculator-frontend
+          context: node/tax-calculator-frontend
           push: true
           tags: ${{secrets.DOCKER_USERNAME}}/tax-service-frontend:latest
 
@@ -85,5 +85,5 @@ jobs:
 
         - name: Deploy to EKS
           run: |
-            kubectl apply -f k8s/aws/tax-calculator/frontend
-            kubectl apply -f k8s/aws/tax-calculator/ingress.yaml
+            kubectl apply -f k8s/aws/frontend
+            kubectl apply -f k8s/aws/ingress.yaml

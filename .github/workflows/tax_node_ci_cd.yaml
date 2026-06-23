@@ -21,11 +21,11 @@ jobs:
           node-version: '25'
 
       - name: Install dependencies
-        working-directory: docker/app2-tax-calculator/node/${{ matrix.service }}
+        working-directory: node/${{ matrix.service }}
         run: npm ci
 
       - name: Run tests
-        working-directory: docker/app2-tax-calculator/node/${{ matrix.service }}
+        working-directory: node/${{ matrix.service }}
         run: npm test --if-present
 
   docker-build-push:
@@ -35,8 +35,8 @@ jobs:
     strategy:
       matrix:
         service:
-          - { name: service-a,docker_name: service-a,path: docker/app2-tax-calculator/node/service-a }
-          - { name: service-b,docker_name: service-b,path: docker/app2-tax-calculator/node/service-b }
+          - { name: service-a,docker_name: service-a,path: node/service-a }
+          - { name: service-b,docker_name: service-b,path: node/service-b }
 
     steps:
       - name: Checkout code
@@ -81,5 +81,5 @@ jobs:
 
         - name: Deploy to EKS
           run: |
-            kubectl apply -f k8s/aws/tax-calculator/service-a
-            kubectl apply -f k8s/aws/tax-calculator/service-b
+            kubectl apply -f k8s/aws/service-a
+            kubectl apply -f k8s/aws/service-b
